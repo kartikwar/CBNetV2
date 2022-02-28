@@ -67,18 +67,23 @@ In case you get errors use the steps given below for installation.
 
 4.) pip install torch==1.6.0 torchvision==0.7.0
 
-5.) wget https://download.openmmlab.com/mmcv/dist/cu101/torch1.6.0/mmcv_full-1.3.12-cp36-cp36m-manylinux1_x86_64.whl
+5.) wget https://download.openmmlab.com/mmcv/dist/cu101/torch1.6.0/mmcv_full-1.3.18-cp36-cp36m-manylinux1_x86_64.whl
 
 Note: See the page https://download.openmmlab.com/mmcv/dist/cu101/torch1.6/index.html to select the combatible version in case of errors
 
-6.) pip install mmcv_full-1.3.12-cp36-cp36m-manylinux1_x86_64.whl
+6.) pip install mmcv_full-1.3.18-cp36-cp36m-manylinux1_x86_64.whl
 
-7.) cd CBNetV2
+7.) pip install  mmdet
 
-8.) pip install -r requirements/runtime.txt
+8.) cd CBNetV2
+
+9.) pip install -r requirements/runtime.txt
 
 ### Inference
 ```
+# to test on single image
+python inference.py
+
 # single-gpu testing (w/o segm result)
 python tools/test.py <CONFIG_FILE> <DET_CHECKPOINT_FILE> --eval bbox 
 
