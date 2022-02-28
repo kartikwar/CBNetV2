@@ -55,6 +55,26 @@ TTA denotes test time augmentation.
 
 Please refer to [get_started.md](https://github.com/open-mmlab/mmdetection/blob/master/docs/en/get_started.md) for installation and dataset preparation.
 
+In case you get errors use the steps given below for installation.
+
+## Installation Steps:
+
+1.) git clone https://github.com/kartikwar/CBNetV2.git
+
+2.) virtualenv -p python3 cbnet-env
+
+3.) source cbnet-env/bin/activate
+
+4.) pip install torch==1.6.0 torchvision==0.7.0
+
+5.) wget https://download.openmmlab.com/mmcv/dist/cu101/torch1.6.0/mmcv_full-1.3.12-cp36-cp36m-manylinux1_x86_64.whl
+
+6.) pip install mmcv_full-1.3.12-cp36-cp36m-manylinux1_x86_64.whl
+
+7.) cd CBNetV2
+
+8.) pip install -r requirements/runtime.txt
+
 ### Inference
 ```
 # single-gpu testing (w/o segm result)
