@@ -69,6 +69,8 @@ In case you get errors use the steps given below for installation.
 
 5.) wget https://download.openmmlab.com/mmcv/dist/cu101/torch1.6.0/mmcv_full-1.3.12-cp36-cp36m-manylinux1_x86_64.whl
 
+Note: See the page https://download.openmmlab.com/mmcv/dist/cu101/torch1.6/index.html to select the combatible version in case of errors
+
 6.) pip install mmcv_full-1.3.12-cp36-cp36m-manylinux1_x86_64.whl
 
 7.) cd CBNetV2
