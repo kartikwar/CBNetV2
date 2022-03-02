@@ -260,7 +260,7 @@ class BaseDetector(BaseModule, metaclass=ABCMeta):
     def show_result(self,
                     img,
                     result,
-                    score_thr=0.3,
+                    score_thr=0.,
                     bbox_color=(72, 101, 241),
                     text_color=(72, 101, 241),
                     mask_color=None,
@@ -342,7 +342,7 @@ class BaseDetector(BaseModule, metaclass=ABCMeta):
             out_file=out_file)
 
         if not (show or out_file):
-            return img
+            return img, segms
 
     def onnx_export(self, img, img_metas):
         raise NotImplementedError(f'{self.__class__.__name__} does '
