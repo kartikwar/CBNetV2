@@ -100,7 +100,8 @@ def optimize_saliency(im_path, saliency_path):
 	append_count = 0
 	saliency_mask = cv2.imread(saliency_path, 0)
 	output = inference_detector(model, im_path)
-	img, segms = model.show_result(im_path, output)
+	img, segms = model.show_result(im_path, output, score_thr=0.3)
+	return img
 	# cv2.imwrite('image.png', img)
 	saliency_mask = cv2.resize(saliency_mask, (img.shape[1], img.shape[0]))
 	# result = np.zeros(img.shape[:2])
@@ -176,20 +177,26 @@ if __name__ == '__main__':
 	model = init_detector(config_file, checkpoint_file, device='cuda:0')
  
 	images_dir = '../datasets/test-dataset/images/'
-	images_dir = '/home/ubuntu/kartik/Detic/results/inputs/imgs'
+	# images_dir = '/home/ubuntu/kartik/Detic/results/inputs/imgs'
 	saliency_dir = '../bg_remove_saliency_training/results/v15_asp_resized/'
-	saliency_dir = '/home/ubuntu/kartik/Detic/results/inputs/saliency_masks'
-	result_dir = 'results/writing'
+	# saliency_dir = '/home/ubuntu/kartik/Detic/results/inputs/saliency_masks'
+	result_dir = 'results/cbnet-raw'
  
 	os.makedirs(result_dir, exist_ok=True)
 	
-	for f_path in sorted(os.listdir(images_dir)):
+	start_time = time.time()
+ 
+	for f_path in sorted(os.listdir(images_dir))[:100]:
 		print(f_path)
 		res_path = os.path.join(result_dir, f_path)
 		if not os.path.exists(res_path):
 		# if f_path == '139412.jpg':
 			im_path = os.path.join(images_dir, f_path)
 			sal_path = os.path.join(saliency_dir, f_path.replace('.jpg', '_sal_fuse.png'))
-			sal_path = os.path.join(saliency_dir, f_path.replace('.jpg', '.png'))
+			# sal_path = os.path.join(saliency_dir, f_path.replace('.jpg', '.png'))
 			result = optimize_saliency(im_path, sal_path)
 			cv2.imwrite(res_path, result)
+	
+	end_time = time.time()
+ 
+	print(end_time - start_time)

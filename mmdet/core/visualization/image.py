@@ -183,7 +183,7 @@ def imshow_det_bboxes(img,
 
     plt.close()
 
-    return img
+    return img, segms
 
 
 def imshow_gt_det_bboxes(img,
