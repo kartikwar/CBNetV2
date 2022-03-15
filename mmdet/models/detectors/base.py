@@ -299,7 +299,7 @@ class BaseDetector(BaseModule, metaclass=ABCMeta):
             img (Tensor): Only if not `show` or `out_file`
         """
         img = mmcv.imread(img)
-        img = img.copy()
+        # img = img.copy()
         if isinstance(result, tuple):
             bbox_result, segm_result = result
             if isinstance(segm_result, tuple):
@@ -321,28 +321,39 @@ class BaseDetector(BaseModule, metaclass=ABCMeta):
             else:
                 segms = np.stack(segms, axis=0)
         # if out_file specified, do not show image in window
-        if out_file is not None:
-            show = False
+        # if out_file is not None:
+        #     show = False
         # draw bounding boxes
-        img, segms = imshow_det_bboxes(
-            img,
-            bboxes,
-            labels,
-            segms,
-            class_names=self.CLASSES,
-            score_thr=score_thr,
-            bbox_color=bbox_color,
-            text_color=text_color,
-            mask_color=mask_color,
-            thickness=thickness,
-            font_size=font_size,
-            win_name=win_name,
-            show=show,
-            wait_time=wait_time,
-            out_file=out_file)
+        # img, segms = imshow_det_bboxes(
+        #     img,
+        #     bboxes,
+        #     labels,
+        #     segms,
+        #     class_names=self.CLASSES,
+        #     score_thr=score_thr,
+        #     bbox_color=bbox_color,
+        #     text_color=text_color,
+        #     mask_color=mask_color,
+        #     thickness=thickness,
+        #     font_size=font_size,
+        #     win_name=win_name,
+        #     show=show,
+        #     wait_time=wait_time,
+        #     out_file=out_file)
+        
+        if score_thr > 0:
+            assert bboxes.shape[1] == 5
+            scores = bboxes[:, -1]
+            inds = scores > score_thr
+            # bboxes = bboxes[inds, :]
+            # labels = labels[inds]
+            if segms is not None:
+                segms = segms[inds, ...]
 
-        if not (show or out_file):
-            return img, segms
+        # if not (show or out_file):
+        #     return img, segms
+        
+        return img, segms
 
     def onnx_export(self, img, img_metas):
         raise NotImplementedError(f'{self.__class__.__name__} does '

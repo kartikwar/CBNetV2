@@ -96,8 +96,9 @@ def get_contours(mask):
 def optimize_saliency(im_path, saliency_path):
 	start_time = time.time()
 	output = inference_detector(model, im_path)
-	img, segms = model.show_result(im_path, output, score_thr=0.3)
-	return img
+	img, segms = model.show_result(im_path, output, score_thr=0.)
+	# img, segms = model.show_result(im_path, output, score_thr=0.1)
+	# return img
 	result = []
 	encountered_pixels = []
 	append_count = 0
