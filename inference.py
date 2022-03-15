@@ -7,18 +7,8 @@ import itertools
 import os
 
 def sad_calculation(mask, lookup):
-	# mask = cv2.resize(mask.astype('float64'), (500,500))
-	# lookup = cv2.resize(lookup, (500, 500))
-
-	# assert(mask.shape == lookup.shape)
-	# assert(mask.dtype == lookup.dtype)
-
-	mse_diff = ((mask - lookup) ** 2).sum()
 	sad_diff = np.abs(mask - lookup).sum()
-
-	# print(sad_diff)
-
-	return sad_diff, mse_diff
+	return sad_diff
 
 # to check if r2 is inside r1
 def contains(r1, r2):
@@ -104,10 +94,7 @@ def remove_noise(mask, optimized_height, saliency_mask):
 	# cnt = mask
 	
 	#function to split mask into separate contours
-	start_time = time.time()
 	cnts = get_contours(mask)
-	end_time = time.time()
-	# print(end_time - start_time)
 
 	for cnt in cnts:
 		lookup = np.where(cnt==True, saliency_mask/255.0 , 0)
@@ -116,14 +103,8 @@ def remove_noise(mask, optimized_height, saliency_mask):
 		# lookup = np.where(lookup > 0.05, lookup, 0)
 		
 		if not np.all(lookup == 0.) and total_pixels > 0:
-			start_time = time.time()
-			sad_diff, mse_diff = sad_calculation(cnt, lookup)
-			end_time = time.time()
-			# print(end_time - start_time)
-			# cv2.imwrite('lookup.jpg', lookup*255)
-			# cv2.imwrite('mask.jpg', cnt*255)
-			# lookup = saliency_mask[mask]
-			# lookup_pixels = np.count_nonzero(lookup)
+			sad_diff = sad_calculation(cnt, lookup)
+			
 			thresh = sad_diff/total_pixels
 			confidence = 1. - thresh
 			encountered_pixels.append(cnt)
