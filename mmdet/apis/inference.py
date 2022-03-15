@@ -127,6 +127,7 @@ def inference_detector(model, imgs):
             data = dict(img_info=dict(filename=img), img_prefix=None)
         # build the data pipeline
         data = test_pipeline(data)
+        # print(data['img'][0].data.shape)
         datas.append(data)
 
     data = collate(datas, samples_per_gpu=len(imgs))
