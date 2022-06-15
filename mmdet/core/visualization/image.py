@@ -39,7 +39,8 @@ def imshow_det_bboxes(img,
                       win_name='',
                       show=True,
                       wait_time=0,
-                      out_file=None):
+                      out_file=None,
+                      only_segmentation=False):
     """Draw bboxes and class labels (with scores) on an image.
 
     Args:
@@ -130,26 +131,28 @@ def imshow_det_bboxes(img,
         poly = [[bbox_int[0], bbox_int[1]], [bbox_int[0], bbox_int[3]],
                 [bbox_int[2], bbox_int[3]], [bbox_int[2], bbox_int[1]]]
         np_poly = np.array(poly).reshape((4, 2))
-        polygons.append(Polygon(np_poly))
+        if not only_segmentation:
+            polygons.append(Polygon(np_poly))
         color.append(bbox_color)
         label_text = class_names[
             label] if class_names is not None else f'class {label}'
         if len(bbox) > 4:
             label_text += f'|{bbox[-1]:.02f}'
-        ax.text(
-            bbox_int[0],
-            bbox_int[1],
-            f'{label_text}',
-            bbox={
-                'facecolor': 'black',
-                'alpha': 0.8,
-                'pad': 0.7,
-                'edgecolor': 'none'
-            },
-            color=text_color,
-            fontsize=font_size,
-            verticalalignment='top',
-            horizontalalignment='left')
+        if not only_segmentation:
+            ax.text(
+                bbox_int[0],
+                bbox_int[1],
+                f'{label_text}',
+                bbox={
+                    'facecolor': 'black',
+                    'alpha': 0.8,
+                    'pad': 0.7,
+                    'edgecolor': 'none'
+                },
+                color=text_color,
+                fontsize=font_size,
+                verticalalignment='top',
+                horizontalalignment='left')
         if segms is not None:
             color_mask = mask_colors[labels[i]]
             mask = segms[i].astype(bool)

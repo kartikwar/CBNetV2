@@ -269,10 +269,12 @@ class BaseDetector(BaseModule, metaclass=ABCMeta):
                     win_name='',
                     show=False,
                     wait_time=0,
-                    out_file=None):
+                    out_file=None,
+                    only_segmentation=False):
         """Draw `result` over `img`.
 
         Args:
+            only_segmentation: If true will only show the output of segmentation.
             img (str or Tensor): The image to be displayed.
             result (Tensor or tuple): The results to draw over `img`
                 bbox_result or (bbox_result, segm_result).
@@ -324,31 +326,32 @@ class BaseDetector(BaseModule, metaclass=ABCMeta):
         # if out_file is not None:
         #     show = False
         # draw bounding boxes
-        # img, segms = imshow_det_bboxes(
-        #     img,
-        #     bboxes,
-        #     labels,
-        #     segms,
-        #     class_names=self.CLASSES,
-        #     score_thr=score_thr,
-        #     bbox_color=bbox_color,
-        #     text_color=text_color,
-        #     mask_color=mask_color,
-        #     thickness=thickness,
-        #     font_size=font_size,
-        #     win_name=win_name,
-        #     show=show,
-        #     wait_time=wait_time,
-        #     out_file=out_file)
+        img, segms = imshow_det_bboxes(
+            img,
+            bboxes,
+            labels,
+            segms,
+            class_names=self.CLASSES,
+            score_thr=score_thr,
+            bbox_color=bbox_color,
+            text_color=text_color,
+            mask_color=mask_color,
+            thickness=thickness,
+            font_size=font_size,
+            win_name=win_name,
+            show=show,
+            wait_time=wait_time,
+            out_file=out_file,
+            only_segmentation=only_segmentation)
         
-        if score_thr > 0:
-            assert bboxes.shape[1] == 5
-            scores = bboxes[:, -1]
-            inds = scores > score_thr
-            # bboxes = bboxes[inds, :]
-            # labels = labels[inds]
-            if segms is not None:
-                segms = segms[inds, ...]
+        # if score_thr > 0:
+        #     assert bboxes.shape[1] == 5
+        #     scores = bboxes[:, -1]
+        #     inds = scores > score_thr
+        #     # bboxes = bboxes[inds, :]
+        #     # labels = labels[inds]
+        #     if segms is not None:
+        #         segms = segms[inds, ...]
 
         # if not (show or out_file):
         #     return img, segms

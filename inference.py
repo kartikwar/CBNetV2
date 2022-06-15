@@ -121,65 +121,12 @@ def remove_noise(mask, optimized_height, saliency_mask):
 	
 	return result, encountered_pixels
 
-def optimize_saliency(im_path, saliency_path):
-	OPTIMIZE_HEIGHT = 500
-	start_time = time.time()
+def optimize_saliency(im_path):
+	# OPTIMIZE_HEIGHT = 500
+	# start_time = time.time()
 	output = inference_detector(model, im_path)
-	img, segms = model.show_result(im_path, output, score_thr=0.)
-	# print(segms.shape)
-	# img, segms = model.show_result(im_path, output, score_thr=0.1)
-	# return img
-	
-	result = []
-	encountered_pixels = []
-	
-	saliency_mask = cv2.imread(saliency_path, 0)
-	
-	
-	
-	# return img
-	# cv2.imwrite('image.png', img)
-	saliency_mask = cv2.resize(saliency_mask, (OPTIMIZE_HEIGHT, OPTIMIZE_HEIGHT))
-	# result = np.zeros(img.shape[:2])
-
-	#to do: need to fix this
-	if segms is not None:
-		# to do: check if this could be converted into multiprocessing 
-  		# or can you make use of numpy here
-		for mask in segms:
-			curr_result, seen_pixels = remove_noise(mask, OPTIMIZE_HEIGHT, saliency_mask)
-			result = result + curr_result
-			encountered_pixels = encountered_pixels + seen_pixels
-	
- 
-	#combine encountered pixels and saliency mask
-	if len(result) > 0:
-		result = np.array(result)
-		result = np.sum(result, axis=0)
-		result = np.where(result>0, 1, 0)
-		result = result*255
-		result = result.astype('uint8')
-	else:
-		result = np.zeros(img.shape[:2])
-
-	if len(encountered_pixels) > 0:
-		encountered_pixels = np.array(encountered_pixels)
-		encountered_pixels = np.sum(encountered_pixels, axis=0)
-		encountered_pixels = np.where(encountered_pixels>0, 1, 0)
-		encountered_pixels = encountered_pixels*255
-		encountered_pixels = encountered_pixels.astype('uint8')
-	else:
-		encountered_pixels = np.zeros(img.shape[:2])
-
-	corrected_result = np.where(encountered_pixels > 0, result , saliency_mask)
- 
-	#multiply with saliency mask
-	saliency_mask = saliency_mask.astype('float32')/255.0
-	corrected_result = corrected_result.astype('float32')/255.0
-	corrected_result = saliency_mask * corrected_result
-	corrected_result = corrected_result*255
-	
-	return cv2.resize(corrected_result.astype('uint8'), (img.shape[1], img.shape[0]))
+	img, segms = model.show_result(im_path, output, score_thr=0.3, only_segmentation=True)
+	return img
 
 if __name__ == '__main__':
 	config_file = 'configs/cbnet/htc_cbv2_swin_large_patch4_window7_mstrain_400-1400_giou_4conv1f_adamw_1x_coco.py'
@@ -187,11 +134,8 @@ if __name__ == '__main__':
 	
 	model = init_detector(config_file, checkpoint_file, device='cuda:0')
  
-	images_dir = '../datasets/test-dataset/images/'
-	# images_dir = '/home/ubuntu/kartik/Detic/results/inputs/imgs'
-	saliency_dir = '../bg_remove_saliency_training/results/v15_asp_resized/'
-	# saliency_dir = '/home/ubuntu/kartik/Detic/results/inputs/saliency_masks'
-	result_dir = 'results/cbnet-raw'
+	images_dir = '/home/ubuntu/kartik/STEGO/datasets/cocostuff/images/test2017'
+	result_dir = '/home/ubuntu/kartik/STEGO/results/predictions/quicktest/cbnet'
  
 	os.makedirs(result_dir, exist_ok=True)
 	
@@ -200,13 +144,10 @@ if __name__ == '__main__':
 	for f_path in sorted(os.listdir(images_dir))[:100]:
 		print(f_path)
 		res_path = os.path.join(result_dir, f_path)
-		if not os.path.exists(res_path):
-		# if f_path == '139412.jpg':
-			im_path = os.path.join(images_dir, f_path)
-			sal_path = os.path.join(saliency_dir, f_path.replace('.jpg', '_sal_fuse.png'))
-			# sal_path = os.path.join(saliency_dir, f_path.replace('.jpg', '.png'))
-			result = optimize_saliency(im_path, sal_path)
-			cv2.imwrite(res_path, result)
+		im_path = os.path.join(images_dir, f_path)
+		output = inference_detector(model, im_path)
+		result, segms = model.show_result(im_path, output, score_thr=0.3, only_segmentation=False)
+		cv2.imwrite(res_path, result)
 	
 	end_time = time.time()
  
