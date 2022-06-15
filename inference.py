@@ -146,7 +146,7 @@ if __name__ == '__main__':
 		res_path = os.path.join(result_dir, f_path)
 		im_path = os.path.join(images_dir, f_path)
 		output = inference_detector(model, im_path)
-		result, segms = model.show_result(im_path, output, score_thr=0.3, only_segmentation=False)
+		result, segms = model.show_result(im_path, output, score_thr=0.3, only_segmentation=True)
 		cv2.imwrite(res_path, result)
 	
 	end_time = time.time()
