@@ -84,6 +84,9 @@ Note: See the page https://download.openmmlab.com/mmcv/dist/cu101/torch1.6/index
 # to test on single image
 python inference.py
 
+#for simple inference i.e if you are not interested in optimizing saliency mask
+checkout to branch plain_inference
+
 # single-gpu testing (w/o segm result)
 python tools/test.py <CONFIG_FILE> <DET_CHECKPOINT_FILE> --eval bbox 
 
